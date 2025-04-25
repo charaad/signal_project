@@ -24,7 +24,6 @@
             <version>1.5.2</version>
         </dependency>
 
-<<<<<<< HEAD
         <!-- JUnit 5 Dependency -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -32,15 +31,6 @@
             <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
-=======
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.9.3</version> <!-- Use the latest version -->
-            <scope>test</scope>
-        </dependency>
-
->>>>>>> 883e063c765948c6c87286355de9ddc9925c43c7
     </dependencies>
 
     <build>

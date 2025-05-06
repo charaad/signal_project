@@ -12,11 +12,11 @@ import java.util.logging.Level;
 
 //Class comments added
 /*
- * This class sets up a base directory
- * Organises and creates files based on data labels
- * Formats data by including patient ID, timestamp, label and data value in each line
- * handles errors by logging them
- * 
+ * This class sets up a base directory.
+ * Organises and creates files based on data labels.
+ * Formats data by including patient ID, timestamp, label and data value in each line.
+ * Handles errors by logging them.
+ * Uses a ConcurrentHashMap to store file paths for each label.
  */
 public class FileOutputStrategy implements OutputStrategy {
 
@@ -31,23 +31,24 @@ public class FileOutputStrategy implements OutputStrategy {
     private ConcurrentHashMap<String, String> fileMap = new ConcurrentHashMap<>();
 
     
-    /*
+    /**
      * Constructor for FileOutputStrategy
+     * @param baseDirectory as a baseDirectory the base directory where files will be stored
      */
     public FileOutputStrategy(String baseDirectory) {
         this.baseDirectory = baseDirectory;
     }
 
     //method comments added
-    /*
-     * Outputs and stores patient data in a file based on label
-     * 
-     * @param patientId unique identifier for patients
-     * @param timestamp time of data generation
-     * @param label type of data being generated
-     * @param data actual data value being generated
+    /**
+     * Outputs and stores patient data in a file based on label.
+     * @param patientId as unique identifier for patients.
+     * @param timestamp as time of data generation.
+     * @param label as type of data being generated.
+     * @param data as actual data value being generated.
+     * @throws IOException for file handling and explains error.
+     * Sets up the base directory for file output.
      */
-
     @Override
     public void output(int patientId, long timestamp, String label, String data) {
         try {

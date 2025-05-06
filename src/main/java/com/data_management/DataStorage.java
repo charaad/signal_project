@@ -60,10 +60,10 @@ public class DataStorage {
      */
     public List<PatientRecord> getRecords(int patientId, long startTime, long endTime) {
         Patient patient = patientMap.get(patientId);
-        if (patient != null) {
-            return patient.getRecords(startTime, endTime);
+        if (patient == null) {
+            return new ArrayList<>(); // Return an empty list if the patient does not exist
         }
-        return new ArrayList<>(); // return an empty list if no patient is found
+        return patient.getRecords(startTime, endTime); // return an empty list if no patient is found
     }
 
     /**

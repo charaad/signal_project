@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+//Class comments added
 /*
  * This class sets up a base directory
  * Organises and creates files based on data labels
@@ -37,13 +38,14 @@ public class FileOutputStrategy implements OutputStrategy {
         this.baseDirectory = baseDirectory;
     }
 
+    //method comments added
     /*
      * Outputs and stores patient data in a file based on label
      * 
-     * @param patientId
-     * @param timestamp
-     * @param label
-     * @param data
+     * @param patientId unique identifier for patients
+     * @param timestamp time of data generation
+     * @param label type of data being generated
+     * @param data actual data value being generated
      */
 
     @Override

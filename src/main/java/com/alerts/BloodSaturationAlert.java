@@ -5,7 +5,7 @@ import java.util.List;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
-public class BloodSaturationAlerts implements AlertStrategy {
+public class BloodSaturationAlert implements AlertStrategy {
 
     public Alert evaluate(Patient patient, long startTime, long endTime) {
       

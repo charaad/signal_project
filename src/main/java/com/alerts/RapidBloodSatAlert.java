@@ -18,7 +18,7 @@ public class RapidBloodSatAlert implements AlertStrategy {
             return null; 
         }
 
-        for (int i = 0; i < records.size(); i++) {
+        for (int i = 1; i < records.size(); i++) {
             double reading1 = records.get(i).getMeasurementValue();
             double reading2 = records.get(i - 1).getMeasurementValue();
             double diff = Math.abs(reading1 - reading2); //assume chronological

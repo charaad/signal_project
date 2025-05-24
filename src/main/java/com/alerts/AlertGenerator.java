@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class AlertGenerator {
     private DataStorage dataStorage;
+    private List<AlertStrategy> strategies;
 
     /**
      * Constructs an {@code AlertGenerator} with a specified {@code DataStorage}.
@@ -24,6 +25,15 @@ public class AlertGenerator {
      */
     public AlertGenerator(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
+        this.strategies =  List.of(
+        new BPAlerts(),
+        new CriticalBPAlert(),
+        new BloodSaturationAlerts(),
+        new CombinedAlert(),
+        new TriggeredAlerts(),
+        new RapidBloodSatAlert(),
+        new ECGDataAlert()
+        );  //factory method to initialize alert strategies
     }
 
     /**
@@ -37,7 +47,17 @@ public class AlertGenerator {
      * @param patient the patient data to evaluate for alert conditions
      */
     public void evaluateData(Patient patient) {
-        // Implementation goes here
+       long now = System.currentTimeMillis();
+    long tenMinutesAgo = now - 10 * 60 * 1000; // Example: last 10 minutes
+
+    if (strategies != null) {
+        for (AlertStrategy strategy : strategies) {
+            Alert alert = strategy.evaluate(patient, tenMinutesAgo, now);
+            if (alert != null) {
+                triggerAlert(alert);
+            }
+        }
+    }
     }
 
     /**
@@ -53,46 +73,5 @@ public class AlertGenerator {
     }
 
 
-    public Alert bloddPressureAlert(Patient patient, long startTime, long endTime) {
-        
-        List<PatientRecord> records = patient.getRecords(startTime, endTime);
-        int patientID = patient.getPatientId();
-
-        //make sure min 3 recs exist
-        if (records.size() < 3) {
-            return null; 
-        }
-
-        for (int i = 2; i < records.size(); i++) {
-      //get lat 3 records of any type bp
-            double reading1 = records.get(i).getMeasurementValue();
-            double reading2 = records.get(i - 1).getMeasurementValue();
-            double reading3 = records.get(i - 2).getMeasurementValue();
-      //Assume chronological order
-            double diff1 = reading1 - reading2;
-            double diff2 = reading2 - reading3;
-      //check if they're increasing or decreasing consecutively
-            boolean isConsutive = false;
-            if(diff1 > 0 && diff2 > 0) {
-                isConsutive = true;
-            } else if (diff1 < 0 && diff2 < 0) {
-                isConsutive = true;
-            }
-       //if changes are by 10 or more
-            if (isConsutive) {  
-                if(Math.abs(diff1) > 10 && Math.abs(diff2) > 10) {  
-                    //trigger alert
-                    Alert alertTrendBP = new Alert(patientID, "Blood Pressure Alert", endTime);
-                }
-            }
-        }
-        return null;
-    }
-
-    public Alert criticalThresholdAlert(Patient patient) {
-        //systolic blood pressure > 180 mmHg || < 90 mmHg
-        //diastolic blood pressure > 120 mmHg || < 60 mmHg
-        return null;
-    }
 
 }

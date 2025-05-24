@@ -1,8 +1,18 @@
 package com.alerts;
 
+import com.alerts.alertImplementations.AlertStrategy;
+import com.alerts.alertImplementations.BPAlert;
+import com.alerts.alertImplementations.BloodSaturationAlert;
+import com.alerts.alertImplementations.CombinedAlert;
+import com.alerts.alertImplementations.CriticalBPAlert;
+import com.alerts.alertImplementations.ECGDataAlert;
+import com.alerts.alertImplementations.RapidBloodSatAlert;
+import com.alerts.alertImplementations.TriggeredAlerts;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +44,17 @@ public class AlertGenerator {
         new RapidBloodSatAlert(),
         new ECGDataAlert()
         );  //factory method to initialize alert strategies
+    }
+
+    public List<Alert> evaluateAll(Patient patient, long startTime, long endTime) {
+        List<Alert> alerts = new ArrayList<>();
+        for (AlertStrategy strategy : strategies) {
+            Alert alert = strategy.evaluate(patient, startTime, endTime);
+            if (alert != null) {
+                alerts.add(alert);
+            }
+        }
+        return alerts;
     }
 
     /**

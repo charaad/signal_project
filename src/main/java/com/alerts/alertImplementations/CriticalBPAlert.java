@@ -1,12 +1,14 @@
-package com.alerts;
+package com.alerts.alertImplementations;
 
 import java.util.List;
 
+import com.alerts.Alert;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
 public class CriticalBPAlert implements AlertStrategy {
 
+@Override
     public Alert evaluate(Patient patient, long startTime, long endTime) {
         List<PatientRecord> records = patient.getRecords(startTime, endTime);
         int patientID = patient.getPatientId();

@@ -1,5 +1,6 @@
-package com.alerts;
+package com.alerts.alertImplementations;
 
+import com.alerts.Alert;
 import com.data_management.Patient;
 
 public interface AlertStrategy {

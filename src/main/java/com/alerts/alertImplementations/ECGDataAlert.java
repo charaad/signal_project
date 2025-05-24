@@ -1,7 +1,9 @@
-package com.alerts;
+package com.alerts.alertImplementations;
 
 import java.util.List;
 import java.util.LinkedList;
+
+import com.alerts.Alert;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
@@ -10,6 +12,7 @@ public class ECGDataAlert implements AlertStrategy {
     private static final int WINDOW_SIZE = 250; // Adjust based on sampling rate
     private static final double THRESHOLD_MULTIPLIER = 2.5;
 
+    @Override
     public Alert evaluate(Patient patient, long startTime, long endTime) {
         
         int patientID = patient.getPatientId();

@@ -1,7 +1,8 @@
 package com.alerts;
 
-// Represents an alert
-public class Alert {
+import com.alerts.alertdecoration.IAlertDeco;
+
+public class Alert implements IAlertDeco{
     private int patientId;
     private String condition;
     private long timestamp;
@@ -22,5 +23,10 @@ public class Alert {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String getDetails() {
+      return getCondition();
     }
 }

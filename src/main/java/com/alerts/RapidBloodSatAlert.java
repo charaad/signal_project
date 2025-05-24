@@ -7,28 +7,31 @@ import com.data_management.PatientRecord;
 
 public class RapidBloodSatAlert implements AlertStrategy {
 
-        public Alert evaluate(Patient patient, long startTime, long endTime) {
-    //O2 saturation drops >= 5% in 10 mins
-
+    public Alert evaluate(Patient patient, long startTime, long endTime) {
+        // O2 saturation drops >= 5% in 10 mins
         int patientID = patient.getPatientId();
-        List <PatientRecord> records = patient.getRecords(startTime, endTime);
-        double mins =  (endTime - startTime) / 60000.0;
-        
+        List<PatientRecord> records = patient.getRecords(startTime, endTime);
+
         if (records.size() < 2) {
-            return null; 
+            return null;
         }
 
-        for (int i = 1; i < records.size(); i++) {
-            double reading1 = records.get(i).getMeasurementValue();
-            double reading2 = records.get(i - 1).getMeasurementValue();
-            double diff = Math.abs(reading1 - reading2); //assume chronological
-
-            if (mins <= 10 && diff >= 0.05) { 
-                //trigger alert
-                Alert rapidDropAlert = new Alert(patientID, "Rapid Drop in Blood Saturation Alert", endTime);
-                return rapidDropAlert;
-            }      
+        double max = Double.NEGATIVE_INFINITY;
+        double min = Double.POSITIVE_INFINITY;
+        for (PatientRecord record : records) {
+            if ("BloodOxygen".equalsIgnoreCase(record.getRecordType())) {     
+                double value = record.getMeasurementValue();
+                if (value > max) max = value;
+                if (value < min) min = value;
+            }
         }
-      return null;
+
+        double drop = max - min;
+        double mins = (endTime - startTime) / 60000.0;
+
+        if (mins <= 10 && drop >= 0.05) {
+            return new Alert(patientID, "Rapid Drop in Blood Saturation Alert", endTime);
+        }
+        return null;
     }
 }

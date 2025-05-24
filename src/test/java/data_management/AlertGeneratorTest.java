@@ -42,12 +42,19 @@ public class AlertGeneratorTest {
 
     @Test
     void testNoAlertsTriggeredForNormalData() {
-        patient.addRecord(120, "SystolicBloodPressure", now - 10000);
-        patient.addRecord(80, "DiastolicBloodPressure", now - 9000);
-        patient.addRecord(0.95, "BloodOxygen", now - 8000);
-        patient.addRecord(80, "ECG", now - 7000);
-        alertGenerator.evaluateData(patient);
-        assertTrue(alertGenerator.getTriggeredAlerts().isEmpty(), "No alerts should be triggered for normal data");
+     patient.addRecord(120, "SystolicBloodPressure", now - 10000);
+     patient.addRecord(120, "SystolicBloodPressure", now - 9000);
+     patient.addRecord(120, "SystolicBloodPressure", now - 8000);
+     patient.addRecord(80, "DiastolicBloodPressure", now - 7000);
+     patient.addRecord(80, "DiastolicBloodPressure", now - 6000);
+     patient.addRecord(80, "DiastolicBloodPressure", now - 5000);
+     patient.addRecord(0.95, "BloodOxygen", now - 4000);
+     for (int i = 0; i < 250; i++) {
+    patient.addRecord(80, "ECG", now - 3000 - i);
+     }
+    alertGenerator.evaluateData(patient);
+    System.out.println(alertGenerator.getTriggeredAlerts());
+    assertTrue(alertGenerator.getTriggeredAlerts().isEmpty(), "No alerts should be triggered for normal data");
     }
 
     @Test

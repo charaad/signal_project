@@ -51,7 +51,7 @@ public class FileDataReader implements DataReader {
         }
     }
 
-    private PatientRecord parseLine(String line) {
+    public PatientRecord parseLine(String line) {
         String[] parts = line.split(",");
         if (parts.length != 5) return null;
         

@@ -1,4 +1,4 @@
-package com.alerts.alertImplementations;
+package com.alerts.alertStrategies;
 
 import java.util.List;
 import java.util.LinkedList;

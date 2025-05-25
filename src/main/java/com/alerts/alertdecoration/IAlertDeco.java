@@ -1,4 +1,4 @@
-package com.alerts;
+package com.alerts.alertdecoration;
 
 public interface IAlertDeco {
 

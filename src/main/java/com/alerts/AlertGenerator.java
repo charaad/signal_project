@@ -1,13 +1,13 @@
 package com.alerts;
 
-import com.alerts.alertImplementations.AlertStrategy;
-import com.alerts.alertImplementations.BPAlert;
-import com.alerts.alertImplementations.BloodSaturationAlert;
-import com.alerts.alertImplementations.CombinedAlert;
-import com.alerts.alertImplementations.CriticalBPAlert;
-import com.alerts.alertImplementations.ECGDataAlert;
-import com.alerts.alertImplementations.RapidBloodSatAlert;
-import com.alerts.alertImplementations.TriggeredAlerts;
+import com.alerts.alertStrategies.AlertStrategy;
+import com.alerts.alertStrategies.BPAlert;
+import com.alerts.alertStrategies.BloodSaturationAlert;
+import com.alerts.alertStrategies.CombinedAlert;
+import com.alerts.alertStrategies.CriticalBPAlert;
+import com.alerts.alertStrategies.ECGDataAlert;
+import com.alerts.alertStrategies.RapidBloodSatAlert;
+import com.alerts.alertStrategies.TriggeredAlerts;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;

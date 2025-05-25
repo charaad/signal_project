@@ -1,4 +1,4 @@
-package com.alerts.alertImplementations;
+package com.alerts.alertStrategies;
 
 import com.alerts.Alert;
 import com.data_management.Patient;

@@ -35,6 +35,10 @@ public class DataStorage {
         return instance;
     }
 
+    public static void resetInstance() {
+    instance = null;
+}
+
     /**
      * Adds or updates patient data in the storage.
      * If the patient does not exist, a new Patient object is created and added to

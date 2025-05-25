@@ -1,6 +1,7 @@
 package data_management;
 
 import com.alerts.*;
+import com.alerts.alertStrategies.*;
 import com.data_management.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

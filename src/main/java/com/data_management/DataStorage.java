@@ -88,6 +88,35 @@ public class DataStorage {
     }
 
     /**
+ * Adds or updates patient data in real-time, checking for duplicates before adding.
+ *
+ * @param patientId        the unique identifier of the patient
+ * @param measurementValue the value of the health metric being recorded
+ * @param recordType       the type of record, e.g., "HeartRate", "BloodPressure"
+ * @param timestamp        the time at which the measurement was taken
+ * @return true if the data was added, false if it was a duplicate
+ */
+public synchronized boolean addPatientDataRealTime(int patientId, double measurementValue, String recordType, long timestamp) {
+    Patient patient = patientMap.get(patientId);
+    if (patient == null) {
+        patient = new Patient(patientId);
+        patientMap.put(patientId, patient);
+    }
+    
+    // Check for duplicate data (same patient, type, timestamp, and value)
+    List<PatientRecord> existingRecords = patient.getRecords(timestamp, timestamp);
+    for (PatientRecord record : existingRecords) {
+        if (record.getRecordType().equals(recordType) && 
+            record.getMeasurementValue() == measurementValue) {
+            return false; // Duplicate found
+        }
+    }
+    
+    patient.addRecord(measurementValue, recordType, timestamp);
+    return true;
+}
+
+    /**
      * The main method for the DataStorage class.
      * Initializes the system, reads data into storage, and continuously monitors
      * and evaluates patient data.

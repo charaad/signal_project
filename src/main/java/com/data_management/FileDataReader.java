@@ -55,6 +55,33 @@ public class FileDataReader implements DataReader {
     }
 
     /**
+     * Not supported for file-based reader.
+     * @throws UnsupportedOperationException always, as this is a file-based reader
+     */
+    @Override
+    public void connectAndReadData(DataStorage dataStorage, String uri) throws IOException {
+        throw new UnsupportedOperationException("WebSocket connection not supported by FileDataReader");
+    }
+
+    /**
+     * Not supported for file-based reader.
+     * @throws UnsupportedOperationException always, as this is a file-based reader
+     */
+    @Override
+    public void disconnect() throws IOException {
+        throw new UnsupportedOperationException("WebSocket disconnection not supported by FileDataReader");
+    }
+
+    /**
+     * Always returns false for file-based reader.
+     * @return false always, as this is a file-based reader
+     */
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
+
+    /**
      * Processes a single file, reading it line by line and adding parsed
      * {@link PatientRecord} instances to the {@link DataStorage}.
      *

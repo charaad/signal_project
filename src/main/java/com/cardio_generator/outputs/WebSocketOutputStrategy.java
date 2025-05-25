@@ -17,10 +17,19 @@ public class WebSocketOutputStrategy implements OutputStrategy {
 
     @Override
     public void output(int patientId, long timestamp, String label, String data) {
-        String message = String.format("%d,%d,%s,%s", patientId, timestamp, label, data);
-        // Broadcast the message to all connected clients
-        for (WebSocket conn : server.getConnections()) {
-            conn.send(message);
+        try {
+            // Validate and parse data to ensure it's numeric
+            double measurementValue = Double.parseDouble(data);
+            // Format: patientId,timestamp,label,measurementValue
+            String message = String.format("%d,%d,%s,%.2f", patientId, timestamp, label, measurementValue);
+            
+            // Broadcast the message to all connected clients
+            for (WebSocket conn : server.getConnections()) {
+                conn.send(message);
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid data format for WebSocket output: " + data);
+            e.printStackTrace();
         }
     }
 

@@ -11,27 +11,54 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link AlertGenerator} class.
+ * <p>
+ * These tests verify that appropriate alerts are triggered based on the
+ * patient's vital records, such as blood pressure, blood oxygen, ECG, and manual triggers.
+ */
 public class AlertGeneratorTest {
 
     private Patient patient;
     private long now;
     private TestAlertGenerator alertGenerator;
 
-    // Helper subclass to capture triggered alerts
+     /**
+     * A test subclass of {@link AlertGenerator} that captures triggered alerts for verification.
+     */
     static class TestAlertGenerator extends AlertGenerator {
         List<Alert> triggeredAlerts = new ArrayList<>();
+
+        /**
+         * Constructs the test alert generator with the given data storage.
+         * @param ds the data storage object
+         */
         public TestAlertGenerator(DataStorage ds) {
             super(ds);
         }
+
+         /**
+         * Overrides the method to collect triggered alerts instead of sending them.
+         * @param alert the alert to capture
+         */
         @Override
         protected void triggerAlert(Alert alert) {
             triggeredAlerts.add(alert);
         }
+
+        /**
+         * Returns the list of captured alerts.
+         * @return list of triggered alerts
+         */
         public List<Alert> getTriggeredAlerts() {
             return triggeredAlerts;
         }
     }
 
+     /**
+     * Initializes a new {@link Patient}, {@link DataStorage}, and {@link AlertGenerator}
+     * before each test.
+     */
     @BeforeEach
     void setUp() {
         patient = new Patient(1);
@@ -40,6 +67,9 @@ public class AlertGeneratorTest {
         alertGenerator = new TestAlertGenerator(ds);
     }
 
+    /**
+     * Verifies that no alerts are triggered when all vital signs are within normal ranges.
+     */
     @Test
     void testNoAlertsTriggeredForNormalData() {
      patient.addRecord(120, "SystolicBloodPressure", now - 10000);
@@ -57,6 +87,9 @@ public class AlertGeneratorTest {
     assertTrue(alertGenerator.getTriggeredAlerts().isEmpty(), "No alerts should be triggered for normal data");
     }
 
+     /**
+     * Verifies that a critical systolic blood pressure alert is triggered when the value is too high.
+     */
     @Test
     void testCriticalBPAlertIsTriggered() {
         patient.addRecord(185, "SystolicBloodPressure", now - 10000);
@@ -65,6 +98,9 @@ public class AlertGeneratorTest {
                 .anyMatch(a -> a.getCondition().contains("Systolic")), "Critical BP alert should be triggered");
     }
 
+     /**
+     * Verifies that a combined alert (hypotensive + low oxygen) is triggered when both conditions occur.
+     */
     @Test
     void testCombinedAlertIsTriggered() {
         patient.addRecord(85, "SystolicBloodPressure", now - 10000);
@@ -74,6 +110,9 @@ public class AlertGeneratorTest {
                 .anyMatch(a -> a.getCondition().toLowerCase().contains("hypotensive")), "Combined alert should be triggered");
     }
 
+     /**
+     * Verifies that a manual trigger alert is activated when a manual event record is added.
+     */
     @Test
     void testTriggeredAlertsIsTriggered() {
         patient.addRecord(1, "ManualTrigger", now - 1000);
@@ -82,6 +121,9 @@ public class AlertGeneratorTest {
                 .anyMatch(a -> a.getCondition().toLowerCase().contains("manual")), "Manual trigger alert should be triggered");
     }
 
+    /**
+     * Verifies that multiple alerts are triggered if multiple abnormal conditions are present.
+     */
     @Test
     void testMultipleAlertsTriggered() {
         patient.addRecord(185, "SystolicBloodPressure", now - 10000);
@@ -91,6 +133,9 @@ public class AlertGeneratorTest {
         assertTrue(alertGenerator.getTriggeredAlerts().size() >= 2, "Multiple alerts should be triggered");
     }
 
+    /**
+     * Verifies that no alerts are triggered if no records are present for a patient.
+     */
     @Test
     void testNoAlertsWhenNoRecords() {
         alertGenerator.evaluateData(patient);

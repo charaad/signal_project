@@ -9,13 +9,35 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+/**
+ * {@code FileDataReader} is an implementation of the {@link DataReader} interface
+ * that reads patient data records from all files in a specified directory.
+ * <p>
+ * Each line of the input files is expected to be a CSV string in the following format:
+ * <pre>
+ *     patientId, timestamp, recordType, measurementValue, <unused_field>
+ * </pre>
+ * The fifth field is ignored.
+ */
 public class FileDataReader implements DataReader {
     private String outputDirectory;
 
+    /**
+     * Constructs a {@code FileDataReader} that reads from the given output directory.
+     *
+     * @param outputDirectory the directory path where data files are stored
+     */
     public FileDataReader(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
+    /**
+     * Reads data from all regular files in the configured output directory
+     * and stores it into the provided {@link DataStorage} instance.
+     *
+     * @param dataStorage the data storage system to store parsed patient records
+     * @throws IOException if the output directory is invalid or unreadable
+     */
     @Override
     public void readData(DataStorage dataStorage) throws IOException {
         Path dirPath = Paths.get(outputDirectory);
@@ -32,6 +54,13 @@ public class FileDataReader implements DataReader {
         }
     }
 
+    /**
+     * Processes a single file, reading it line by line and adding parsed
+     * {@link PatientRecord} instances to the {@link DataStorage}.
+     *
+     * @param file the file to be processed
+     * @param dataStorage the data storage to which parsed records are added
+     */
     private void processFile(File file, DataStorage dataStorage) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
@@ -51,6 +80,16 @@ public class FileDataReader implements DataReader {
         }
     }
 
+    /**
+     * Parses a single line of CSV-formatted patient data into a {@link PatientRecord} object.
+     * Expected format:
+     * <pre>
+     *     patientId, timestamp, recordType, measurementValue, <unused_field>
+     * </pre>
+     *
+     * @param line the line of text to parse
+     * @return a {@code PatientRecord} if the line is valid; {@code null} otherwise
+     */
     public PatientRecord parseLine(String line) {
         String[] parts = line.split(",");
         if (parts.length != 5) return null;

@@ -9,11 +9,24 @@ import java.nio.file.Path;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link FileDataReader} class.
+ * <p>
+ * These tests verify that data is read correctly from files,
+ * malformed files are handled gracefully, and directory validation is performed.
+ */
 class FileDataReaderTest {
     
+    /** Temporary directory created for test file I/O. Automatically cleaned up after tests. */
     @TempDir
     Path tempDir;
     
+    /**
+     * Tests reading multiple valid data files and verifies that the
+     * correct {@link PatientRecord} entries are stored in {@link DataStorage}.
+     *
+     * @throws IOException if file creation fails
+     */
     @Test
     void testReadDataWithValidFiles() throws IOException {
         // Create test files
@@ -38,12 +51,22 @@ class FileDataReaderTest {
         assertEquals(120.0, records2.get(0).getMeasurementValue());
     }
     
+     /**
+     * Tests behavior when reading from a non-existent directory.
+     * Verifies that an {@link IOException} is thrown.
+     */
     @Test
     void testReadDataWithInvalidDirectory() {
         DataReader reader = new FileDataReader("/nonexistent/directory");
         assertThrows(IOException.class, () -> reader.readData(new DataStorage()));
     }
     
+    /**
+     * Tests reading from a malformed file (incorrect format).
+     * Ensures that no exceptions are thrown and no records are stored.
+     *
+     * @throws IOException if the test file cannot be created
+     */
     @Test
     void testReadDataWithMalformedFile() throws IOException {
         Path file = tempDir.resolve("malformed.txt");
@@ -56,6 +79,10 @@ class FileDataReaderTest {
         assertTrue(storage.getRecords(1, 0, Long.MAX_VALUE).isEmpty());
     }
     
+    /**
+     * Tests parsing of a well-formed CSV line using {@link FileDataReader#parseLine(String)}.
+     * Verifies that the resulting {@link PatientRecord} has correct field values.
+     */
     @Test
     void testParseLineValid() {
         FileDataReader reader = new FileDataReader("");
@@ -69,6 +96,10 @@ class FileDataReaderTest {
         assertEquals(78.0, record.getMeasurementValue());
     }
     
+    /**
+     * Tests parsing of malformed lines using {@link FileDataReader#parseLine(String)}.
+     * Verifies that null is returned for invalid input formats.
+     */
     @Test
     void testParseLineInvalid() {
         FileDataReader reader = new FileDataReader("");

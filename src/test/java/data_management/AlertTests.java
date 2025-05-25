@@ -8,11 +8,21 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/**
+ * Unit tests for individual alert strategy classes under {@code com.alerts.alertStrategies}.
+ * <p>
+ * Each test case ensures that alerts are correctly triggered or suppressed based on
+ * the patient's recorded vital signs and the logic implemented in each strategy.
+ */
 public class AlertTests {
 
     private Patient patient;
     private long now;
 
+    /**
+     * Set up a fresh {@link Patient} instance and timestamp before each test.
+     */
     @BeforeEach
     void setUp() {
         patient = new Patient(1);
@@ -20,6 +30,10 @@ public class AlertTests {
     }
 
     // BPAlert tests
+
+    /**
+     * Tests that {@link BPAlert} triggers when there is a consistent upward trend in systolic BP.
+     */
     @Test
     void testBPAlertsTriggered() {
         patient.addRecord(100, "SystolicBloodPressure", now - 30000);
@@ -30,6 +44,9 @@ public class AlertTests {
         assertNotNull(alert, "BPAlerts should trigger on consecutive increases");
     }
 
+     /**
+     * Tests that {@link BPAlert} does not trigger on minor variations in systolic BP.
+     */
     @Test
     void testBPAlertsNotTriggered() {
         patient.addRecord(120, "SystolicBloodPressure", now - 30000);
@@ -40,6 +57,9 @@ public class AlertTests {
         assertNull(alert, "BPAlerts should not trigger on small changes");
     }
 
+    /**
+     * Tests that {@link BPAlert} does not trigger when there are no relevant records.
+     */
     @Test
     void testBPAlertsEmptyRecords() {
         BPAlert bpAlerts = new BPAlert();
@@ -48,6 +68,10 @@ public class AlertTests {
     }
 
     // CriticalBPAlert tests
+
+    /**
+     * Tests that {@link CriticalBPAlert} triggers on dangerously high systolic BP.
+     */
     @Test
     void testCriticalBPAlertTriggeredSystolic() {
         patient.addRecord(185, "SystolicBloodPressure", now - 10000);
@@ -57,6 +81,9 @@ public class AlertTests {
         assertTrue(alert.getCondition().contains("Systolic"));
     }
 
+    /**
+     * Tests that {@link CriticalBPAlert} triggers on dangerously high diastolic BP.
+     */
     @Test
     void testCriticalBPAlertTriggeredDiastolic() {
         patient.addRecord(125, "DiastolicBloodPressure", now - 10000);
@@ -66,6 +93,9 @@ public class AlertTests {
         assertTrue(alert.getCondition().contains("Diastolic"));
     }
 
+     /**
+     * Tests that {@link CriticalBPAlert} does not trigger on normal blood pressure.
+     */
     @Test
     void testCriticalBPAlertNotTriggered() {
         patient.addRecord(120, "SystolicBloodPressure", now - 10000);
@@ -75,6 +105,9 @@ public class AlertTests {
         assertNull(alert, "CriticalBPAlert should not trigger on normal values");
     }
 
+     /**
+     * Tests that {@link CriticalBPAlert} does not trigger at threshold boundary values.
+     */
     @Test
     void testCriticalBPAlertBoundary() {
         patient.addRecord(180, "SystolicBloodPressure", now - 10000);
@@ -85,6 +118,10 @@ public class AlertTests {
     }
 
     // BloodSaturationAlert tests
+
+     /**
+     * Tests that {@link BloodSaturationAlert} triggers when blood oxygen falls below threshold.
+     */
     @Test
     void testBloodSaturationAlertsTriggered() {
         patient.addRecord(0.91, "BloodOxygen", now - 5000);
@@ -93,6 +130,9 @@ public class AlertTests {
         assertNotNull(alert, "BloodSaturationAlerts should trigger on low saturation");
     }
 
+     /**
+     * Tests that {@link BloodSaturationAlert} does not trigger on normal saturation.
+     */
     @Test
     void testBloodSaturationAlertsNotTriggered() {
         patient.addRecord(0.95, "BloodOxygen", now - 5000);
@@ -101,6 +141,9 @@ public class AlertTests {
         assertNull(alert, "BloodSaturationAlerts should not trigger on normal saturation");
     }
 
+     /**
+     * Tests that {@link BloodSaturationAlert} does not trigger exactly at the threshold.
+     */
     @Test
     void testBloodSaturationAlertsBoundary() {
         patient.addRecord(0.92, "BloodOxygen", now - 5000);
@@ -110,6 +153,10 @@ public class AlertTests {
     }
 
     // CombinedAlert tests
+
+     /**
+     * Tests that {@link CombinedAlert} triggers when both low BP and low oxygen are present.
+     */
     @Test
     void testCombinedAlertTriggered() {
         patient.addRecord(85, "SystolicBloodPressure", now - 10000);
@@ -119,6 +166,9 @@ public class AlertTests {
         assertNotNull(alert, "CombinedAlert should trigger when both conditions are met");
     }
 
+     /**
+     * Tests that {@link CombinedAlert} does not trigger when only one condition is met.
+     */
     @Test
     void testCombinedAlertNotTriggered() {
         patient.addRecord(120, "SystolicBloodPressure", now - 10000);
@@ -128,6 +178,9 @@ public class AlertTests {
         assertNull(alert, "CombinedAlert should not trigger if only one condition is met");
     }
 
+     /**
+     * Tests that {@link CombinedAlert} does not trigger with no records.
+     */
     @Test
     void testCombinedAlertEmptyRecords() {
         CombinedAlert alertStrategy = new CombinedAlert();
@@ -136,6 +189,10 @@ public class AlertTests {
     }
 
     // TriggeredAlerts tests
+
+     /**
+     * Tests that {@link TriggeredAlerts} triggers when a manual trigger record is added.
+     */
     @Test
     void testTriggeredAlertsTriggered() {
         patient.addRecord(1, "ManualTrigger", now - 1000);
@@ -144,6 +201,9 @@ public class AlertTests {
         assertNotNull(alert, "TriggeredAlerts should trigger on manual trigger record");
     }
 
+     /**
+     * Tests that {@link TriggeredAlerts} does not trigger on unrelated records.
+     */
     @Test
     void testTriggeredAlertsNotTriggered() {
         patient.addRecord(120, "SystolicBloodPressure", now - 1000);
@@ -152,6 +212,9 @@ public class AlertTests {
         assertNull(alert, "TriggeredAlerts should not trigger if no manual trigger record");
     }
 
+     /**
+     * Tests that {@link TriggeredAlerts} does not trigger with no records.
+     */
     @Test
     void testTriggeredAlertsEmptyRecords() {
         TriggeredAlerts alertStrategy = new TriggeredAlerts();
@@ -160,6 +223,10 @@ public class AlertTests {
     }
 
     // RapidBloodSatAlert tests
+
+     /**
+     * Tests that {@link RapidBloodSatAlert} triggers on a rapid drop in blood oxygen.
+     */
     @Test
     void testRapidBloodSatAlertTriggered() {
         patient.addRecord(0.97, "BloodOxygen", now - 20000);
@@ -170,6 +237,9 @@ public class AlertTests {
         assertNotNull(alert, "RapidBloodSatAlert should trigger on rapid drop");
     }
 
+     /**
+     * Tests that {@link RapidBloodSatAlert} does not trigger if the drop is too slow.
+     */
     @Test
     void testRapidBloodSatAlertNotTriggered() {
         patient.addRecord(0.97, "BloodOxygen", now - 20000);
@@ -181,6 +251,10 @@ public class AlertTests {
     }
 
     // ECGDataAlert tests
+
+     /**
+     * Tests that {@link ECGDataAlert} triggers when abnormal ECG values are recorded.
+     */
     @Test
     void testECGDataAlertTriggered() {
         // Add enough records to fill the window if needed by your implementation
@@ -193,6 +267,9 @@ public class AlertTests {
         assertNotNull(alert, "ECGDataAlert should trigger on abnormal ECG value");
     }
 
+     /**
+     * Tests that {@link ECGDataAlert} does not trigger when all ECG values are normal.
+     */
     @Test
     void testECGDataAlertNotTriggered() {
         for (int i = 0; i < 250; i++) {
@@ -203,7 +280,11 @@ public class AlertTests {
         assertNull(alert, "ECGDataAlert should not trigger on normal ECG values");
     }
 
-    // General edge case: records outside time window
+    // General edge case
+
+     /**
+     * Tests that old data outside the specified evaluation window does not trigger an alert.
+     */
     @Test
     void testRecordsOutsideWindow() {
         patient.addRecord(185, "SystolicBloodPressure", now - 1000000); // way outside window
